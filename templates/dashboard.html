@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <style>
+        /* 使用彩色渐变模糊背景 */
+         body::before {
+            content: '';
+            position: fixed; /* 或absolute，取决于布局需求 */
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* 确保背景位于内容之下 */
+            background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%); /* 示例渐变 */
+            filter: blur(10px); /* 模糊效果 */
+        }
+        
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+        }
+        .dashboard-container {
+            display: flex;
+            height: 100%;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #f0f0f0;
+            padding: 20px;
+            height: 100%;
+            box-sizing: border-box;
+        }
+        .sidebar a {
+            display: block;
+            padding: 10px;
+            color: #333;
+            text-decoration: none;
+            margin-bottom: 5px;
+            border-radius: 5px;
+        }
+        .sidebar a:hover {
+            background-color: #ddd;
+        }
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            background-color: #fff;
+            height: 100%;
+            box-sizing: border-box;
+            overflow-y: auto;
+        }
+
+        button {
+            background: linear-gradient(45deg, #5ae615, #5ce91b); /* 浅绿色渐变 */
+            border: none;
+            color: white;
+            padding: 10px 20px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 4px 2px;
+            transition: background 0.5s ease, transform 0.2s ease;
+            border-radius: 5px; /* 圆角 */
+            cursor: pointer; /* 鼠标悬停时显示手形图标 */
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #56ab2f, #a8e063); /* 鼠标悬停时的渐变反向 */
+            transform: scale(1.05); /* 鼠标悬停时轻微放大 */
+        }
+    </style>
+</head>
+<body>
+    <div class="dashboard-container">
+        <div class="sidebar">
+            <a href="/user_view">添加数据</a>
+            <button data-action="Updating User" onclick="showAction(this)">查询数据</button>
+        </div>
+      
+    </div>
+    
+    <script>
+        function showAction(button) {
+            const action = button.getAttribute('data-action');
+            const url = `/path/to/api?action=${action}`; // 修改为实际的API路径
+
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('content').innerHTML = `Selected Action: ${data.actionResponse}`;
+                    // 更新浏览器的URL而不刷新页面
+                    history.pushState({ path: url }, '', url);
+                })
+                .catch(error => console.error('Error:', error));
+        }
+
+        function showAction(element) {
+            var action = element.getAttribute('data-action');
+            var contentDiv = document.getElementById('content');
+            
+            // 清除当前内容
+            contentDiv.innerHTML = '';
+            
+            // 根据点击的按钮显示不同的内容
+            switch (action) {
+                case 'Adding User':
+                    // 显示添加用户的表单
+                    var formHtml = `
+                    <form method="POST">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" value="Submit">
+                    </form>
+                    `;
+                    contentDiv.innerHTML = formHtml;
+                    break;
+                case 'Deleting User':
+                    // 显示删除用户的内容
+                    contentDiv.innerHTML = '<p>删除用户功能尚未实现。</p>';
+                    break;
+                case 'Querying User':
+                    // 显示查询用户的内容
+                    contentDiv.innerHTML = '';
+                    break;
+                case 'Updating User':
+                    // 显示更新用户的内容
+                    contentDiv.innerHTML = '<p>更新用户功能尚未实现。</p>';
+                    break;
+                default:
+                    contentDiv.innerHTML = '<p>请选择一个操作。</p>';
+            }
+        }
+
+        function fetchUserData() {
+            // 模拟从服务器获取数据
+            var userId = document.getElementById('queryUserId').value;
+            if (userId === "123") { // 假设用户ID为123时有数据返回
+                var userData = {
+                    name: "张三",
+                    faceID: "face123,face456"
+                };
+                
+                // 显示用户数据
+                document.getElementById('userName').textContent = userData.name;
+                document.getElementById('userid').textContent = userData.userid;
+                document.getElementById('userData').style.display = ''; // 显示表格
+            } else {
+                alert("未找到用户数据");
+            }
+        }
+    </script>
+</body>
+</html>
