@@ -21,4 +21,11 @@ def data_processing(request):
     
 
 def lockdown(request):
-    
+    if request.method == 'GET':
+        if 'lockdown' in request.GET and request.GET['lockdown'] == 'on':
+            # Lockdown code here
+            return HttpResponse("Lockdown enabled.")
+        elif 'lockdown' in request.GET and request.GET['lockdown'] == 'off':
+            # Lockdown code here
+            return HttpResponse("Lockdown disabled.")
+

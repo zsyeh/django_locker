@@ -59,7 +59,7 @@ def known_refresh():
 def register_face():
     add_face()
     known_refresh()
-    return '注册结束'
+    return 0
 
 def detect_face(frame, known_face_encodings, known_face_names):
     # Resize frame of video to 1/4 size for faster face recognition processing
@@ -111,17 +111,19 @@ def process_video():
 
         if face_names:
             print('Face detected:', face_names)
+            video_capture.release()
+            cv2.destroyAllWindows()
             return face_names[0]
-            break
+            
 
         if time.time() - start_time > 5:
             print('Timeout')
-            return 'Timeout'
-            break
+            video_capture.release()
+            cv2.destroyAllWindows()
+            return -1
+            
 
-    # Release handle to the webcam
-    video_capture.release()
-    cv2.destroyAllWindows()
+
 
 
 
